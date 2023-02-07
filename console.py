@@ -58,7 +58,7 @@ class HBNBCommand(cmd.Cmd):
         if (not arg):
             print("** class name missing **")
             return
-        
+
         new = shlex.split(arg)
 
         if (new[0] != "BaseModel"):
@@ -70,7 +70,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = "{}.{}".format(new[0], new[1])
         all_objs = storage.all()
-        
+
         if (all_objs.get(key) is None):
             print("** no instance found **")
             return
@@ -115,6 +115,44 @@ class HBNBCommand(cmd.Cmd):
         list_instances = [str(all_objs[obj_id]) for obj_id in all_objs.keys()]
         print(list_instances)
 
+    def do_update(self, arg):
+        """Updates an instance of class specified in arg"""
+        if (not arg):
+            print("** class name missing **")
+            return
+
+        new = shlex.split(arg)
+        all_objs = storage.all()
+
+        if (new[0] != "BaseModel"):
+            print("** class doesn't exist **")
+            return
+        if (len(new) == 1):
+            print("** instance id missing **")
+            return
+
+        # check existence of object id
+        obj_key = "{}.{}".format(new[0], new[1])
+        if (all_objs.get(obj_key) is None):
+            print("** no instance found **")
+            return
+
+        if (len(new) == 2):
+            print("** attribute name missing **")
+            return
+        if (len(new) == 3):
+            print("** value missing **")
+            return
+
+        attribute = new[2]
+        value = new[3]
+
+        obj_dict = dict(all_objs[obj_key].__dict__)
+        obj_dict[attribute] = value
+        all_objs[obj_key].__dict__.update(obj_dict)
+
+        all_objs[obj_key].save()
+        storage.save()
 
 
 if __name__ == "__main__":
