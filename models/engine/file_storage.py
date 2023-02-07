@@ -51,7 +51,10 @@ class FileStorage:
             obj_dict = json.loads(json_string)
             """
                 delete the __class__ attribute with respect to requirements
-                of constructor in BaseModel.
+                of constructor in BaseModel. Evaluate the string to give a new
+                instance `ClassName(dict_values)` 
+
+                Note: **dictionary unpacks the dictionary instance
             """
             for obj_val in obj_dict.values():
                 cls_name = obj_val["__class__"]
