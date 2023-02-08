@@ -5,6 +5,12 @@
 import cmd
 import shlex
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
 from models import storage
 
 
@@ -13,6 +19,10 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
+
+    __classes = {"BaseModel": "BaseModel", "User": 'User', "State": 'State',
+                 "City": 'City', "Place": 'Place', "Amenity": 'Amenity',
+                 "Review": 'Review'}
 
     def emptyline(self):
         """prompts for input again if no command is entered
@@ -43,10 +53,12 @@ class HBNBCommand(cmd.Cmd):
             return
 
         new = shlex.split(arg)
-        if (new[0] != "BaseModel"):
+        obj_cls = new[0]
+        if (obj_cls not in HBNBCommand.__classes):
             print("** class  doesn't exist **")
             return
-        new = eval("{}()".format(new[0]))
+        key = HBNBCommand.__classes[obj_cls]
+        new = eval("{}()".format(key))
         new.save()
         print(new.id)
 
@@ -60,21 +72,25 @@ class HBNBCommand(cmd.Cmd):
             return
 
         new = shlex.split(arg)
+        obj_cls = new[0]
 
-        if (new[0] != "BaseModel"):
+        if (obj_cls not in HBNBCommand.__classes):
             print("** class doesn't exist **")
             return
-        if (len(new) < 2 and new[0] == "BaseModel"):
+        if (len(new) < 2):
             print("** instance id missing **")
             return
 
-        key = "{}.{}".format(new[0], new[1])
+        key = HBNBCommand.__classes[obj_cls]
+        obj_id = new[1]
+
+        obj_key = "{}.{}".format(obj_cls, obj_id)
         all_objs = storage.all()
 
-        if (all_objs.get(key) is None):
+        if (all_objs.get(obj_key) is None):
             print("** no instance found **")
             return
-        print_str = all_objs[key]
+        print_str = all_objs[obj_key]
         print(print_str)
 
     def do_destroy(self, arg):
@@ -85,21 +101,24 @@ class HBNBCommand(cmd.Cmd):
             return
 
         new = shlex.split(arg)
+        obj_cls = new[0]
 
-        if (new[0] != "BaseModel"):
+        if (obj_cls not in HBNBCommand.__classes):
             print("** class doesn't exist **")
             return
-        if (len(new) < 2 and new[0] == "BaseModel"):
+        if (len(new) < 2):
             print("** instance id missing **")
             return
 
         all_objs = storage.all()
-        key = "{}.{}".format(new[0], new[1])
+        obj_id = new[1]
 
-        if (all_objs.get(key) is None):
+        obj_key = "{}.{}".format(obj_cls, obj_id)
+
+        if (all_objs.get(obj_key) is None):
             print("** no instance found **")
             return
-        del all_objs[key]
+        del all_objs[obj_key]
         storage.save()
 
     def do_all(self, arg):
@@ -107,13 +126,23 @@ class HBNBCommand(cmd.Cmd):
             Prints a string representation of all the instances
             of BaseModel
         """
-        if (arg and arg != "BaseModel"):
-            print("** class doesn't exist **")
-            return
         all_objs = storage.all()
+        cls_based_list = []
 
-        list_instances = [str(all_objs[obj_id]) for obj_id in all_objs.keys()]
-        print(list_instances)
+        if (arg):
+            if (arg not in HBNBCommand.__classes):
+                print("** class doesn't exist **")
+                return
+            else:
+                for obj_id in all_objs.keys():
+                    class_and_id = obj_id.split(".")
+                    if class_and_id[0] == arg:
+                        cls_based_list.append(str(all_objs[obj_id]))
+                print(cls_based_list)
+        else:
+            list_instances = [str(all_objs[obj_id]) for obj_id in
+                              all_objs.keys()]
+            print(list_instances)
 
     def do_update(self, arg):
         """Updates an instance of class specified in arg"""
@@ -124,7 +153,8 @@ class HBNBCommand(cmd.Cmd):
         new = shlex.split(arg)
         all_objs = storage.all()
 
-        if (new[0] != "BaseModel"):
+        obj_cls = new[0]
+        if (obj_cls not in HBNBCommand.__classes):
             print("** class doesn't exist **")
             return
         if (len(new) == 1):
@@ -132,7 +162,8 @@ class HBNBCommand(cmd.Cmd):
             return
 
         # check existence of object id
-        obj_key = "{}.{}".format(new[0], new[1])
+        obj_id = new[1]
+        obj_key = "{}.{}".format(obj_cls, obj_id)
         if (all_objs.get(obj_key) is None):
             print("** no instance found **")
             return
