@@ -14,8 +14,8 @@ from models.engine.file_storage import FileStorage
 class TestStorage(unittest.TestCase):
     """Test storage engine"""
 
-    maxDiff = None
-    
+    # maxDiff = None
+
     def setUp(self):
         """Sets up instances for test"""
         self.base1 = BaseModel()
@@ -27,7 +27,7 @@ class TestStorage(unittest.TestCase):
         del self.base1
         del self.base2
         del self.store
-    
+
     def test_private_attributes(self):
         """Test that private attributes can't be accessed"""
 
@@ -40,18 +40,17 @@ class TestStorage(unittest.TestCase):
         """
             Test that created instances are saved in FileStorage.__objects.
             This test encompasses new, all, and save methods.
-            The new method is called in the constructor in each of 
+            The new method is called in the constructor in each of
             the instance class.
         """
         self.store.new(self.base1)
         self.store.new(self.base2)
 
-
         base1_key = "{}.{}".format(type(self.base1).__name__, self.base1.id)
         base2_key = "{}.{}".format(type(self.base2).__name__, self.base2.id)
 
         saved_objs = self.store.all()
-        
+
         self.assertIsInstance(saved_objs, dict)
         self.assertIn(base1_key, saved_objs)
         self.assertIn(base2_key, saved_objs)
@@ -88,7 +87,7 @@ class TestStorage(unittest.TestCase):
         # Use created method for file check
         file_path = pathlib.Path("file.json")
         self.assertFileExists(file_path) is True
-        
+
         # Reload objs from JSON file
         self.store.reload()
 
