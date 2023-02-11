@@ -27,26 +27,21 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """prompts for input again if no command is entered
         """
-        return
+        pass
 
     def do_quit(self, arg):
-        """Quit command to exit the program
-        """
+        """Quit command to exit the program"""
         return True
 
     def do_EOF(self, arg):
-        """EOF to exit the console
-        """
+        """EOF (Ctrl + D) to exit the console"""
         print()
         return True
 
     def do_create(self, arg):
         """
-            Creates a new instance of BaseModel and
-            prints the id
-
-            Arg:
-                arg(cls): BaseModel class
+        Creates a new instance of BaseModel and
+        prints the id
         """
         if (not arg):
             print("** class name missing **")
@@ -62,10 +57,18 @@ class HBNBCommand(cmd.Cmd):
         new.save()
         print(new.id)
 
+    def help_show(self):
+        """Help for [show] command"""
+        text = "Prints information about an object from storage"\
+               " based on the class name and id"\
+               "\nExample: (prompt) show ClassName id\nobj displayed on next"\
+               " line"
+        print(text)
+
     def do_show(self, arg):
         """
-            Prints the string representation of an instance
-            based the class name and id
+        Prints the string representation of an instance
+        based the class name and id: show ClassName id
         """
         if (not arg):
             print("** class name missing **")
