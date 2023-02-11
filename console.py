@@ -179,8 +179,15 @@ class HBNBCommand(cmd.Cmd):
         value = new[3]
 
         obj_dict = dict(all_objs[obj_key].__dict__)
-        obj_dict[attribute] = value
-        all_objs[obj_key].__dict__.update(obj_dict)
+
+        if hasattr(all_objs[obj_key], new[2]):
+            cast = str(type(getattr(all_objs[obj_key], new[2])).__name__)
+            obj_dict[attribute] = eval("{}({})".format(cast, value))
+            all_objs[obj_key].__dict__.update(obj_dict)
+
+        else:
+            obj_dict[attribute] = value
+            all_objs[obj_key].__dict__.update(obj_dict)
 
         all_objs[obj_key].save()
         storage.save()
