@@ -58,7 +58,7 @@ class FileStorage:
             """
                 delete the __class__ attribute with respect to requirements
                 of constructor in BaseModel. Evaluate the string to give a new
-                instance `ClassName(dict_values)` 
+                instance `ClassName(dict_values)`
 
                 Note: **dictionary unpacks the dictionary instance
             """
