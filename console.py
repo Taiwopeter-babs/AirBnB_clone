@@ -16,20 +16,29 @@ from models import storage
 
 
 class HBNBCommand(cmd.Cmd):
-    """Simple command line processor class
-    """
+    """Simple command line processor class"""
 
     prompt = "(hbnb) "
 
-    __classes = {"BaseModel": "BaseModel", "User": 'User', "State": 'State',
-                 "City": 'City', "Place": 'Place', "Amenity": 'Amenity',
-                 "Review": 'Review'}
-    __methods = {"all()": "all", "count()": "count", "show": "show",
-                 "destroy": "destroy"}
+    __classes = {
+        "BaseModel": "BaseModel",
+        "User": "User",
+        "State": "State",
+        "City": "City",
+        "Place": "Place",
+        "Amenity": "Amenity",
+        "Review": "Review",
+    }
+    __methods = {
+        "all()": "all",
+        "count()": "count",
+        "show": "show",
+        "destroy": "destroy",
+        "update": "update",
+    }
 
     def emptyline(self):
-        """prompts for input again if no command is entered
-        """
+        """prompts for input again if no command is entered"""
         pass
 
     def do_quit(self, arg):
@@ -51,13 +60,13 @@ class HBNBCommand(cmd.Cmd):
         Creates a new instance of BaseModel and
         prints the id
         """
-        if (not arg):
+        if not arg:
             print("** class name missing **")
             return
 
         new = shlex.split(arg)
         obj_cls = new[0]
-        if (obj_cls not in HBNBCommand.__classes):
+        if obj_cls not in HBNBCommand.__classes:
             print("** class  doesn't exist **")
             return
         key = HBNBCommand.__classes[obj_cls]
@@ -67,10 +76,12 @@ class HBNBCommand(cmd.Cmd):
 
     def help_show(self):
         """Help for [show] command"""
-        text = "Prints information about an object from storage"\
-               " based on the class name and id"\
-               "\nExample: (prompt) show ClassName id\nobj displayed on next"\
-               " line"
+        text = (
+            "Prints information about an object from storage"
+            " based on the class name and id"
+            "\nExample: (prompt) show ClassName id\nobj displayed on next"
+            " line"
+        )
         print(text)
 
     def do_show(self, arg):
@@ -78,17 +89,17 @@ class HBNBCommand(cmd.Cmd):
         Prints the string representation of an instance
         based the class name and id: show ClassName id
         """
-        if (not arg):
+        if not arg:
             print("** class name missing **")
             return
 
         new = shlex.split(arg)
         obj_cls = new[0]
 
-        if (obj_cls not in HBNBCommand.__classes):
+        if obj_cls not in HBNBCommand.__classes:
             print("** class doesn't exist **")
             return
-        if (len(new) < 2):
+        if len(new) < 2:
             print("** instance id missing **")
             return
 
@@ -98,26 +109,25 @@ class HBNBCommand(cmd.Cmd):
         obj_key = "{}.{}".format(obj_cls, obj_id)
         all_objs = storage.all()
 
-        if (all_objs.get(obj_key) is None):
+        if all_objs.get(obj_key) is None:
             print("** no instance found **")
             return
         print_str = all_objs[obj_key]
         print(print_str)
 
     def do_destroy(self, arg):
-        """Deletes from JSON file storage an instance of class
-        """
-        if (not arg):
+        """Deletes from JSON file storage an instance of class"""
+        if not arg:
             print("** class name missing **")
             return
 
         new = shlex.split(arg)
         obj_cls = new[0]
 
-        if (obj_cls not in HBNBCommand.__classes):
+        if obj_cls not in HBNBCommand.__classes:
             print("** class doesn't exist **")
             return
-        if (len(new) < 2):
+        if len(new) < 2:
             print("** instance id missing **")
             return
 
@@ -126,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
 
         obj_key = "{}.{}".format(obj_cls, obj_id)
 
-        if (all_objs.get(obj_key) is None):
+        if all_objs.get(obj_key) is None:
             print("** no instance found **")
             return
         del all_objs[obj_key]
@@ -134,14 +144,14 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, arg):
         """
-            Prints a string representation of all the instances
-            of BaseModel
+        Prints a string representation of all the instances
+        of BaseModel
         """
         all_objs = storage.all()
         cls_based_list = []
 
-        if (arg):
-            if (arg not in HBNBCommand.__classes):
+        if arg:
+            if arg not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
                 return
             else:
@@ -157,47 +167,73 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg):
         """Updates an instance of class specified in arg"""
-        if (not arg):
+        if not arg:
             print("** class name missing **")
             return
 
-        new = shlex.split(arg)
+        # Load all saved objs
         all_objs = storage.all()
+        new = shlex.split(arg)
+
+        # Search for pattern to update with dictionary
+        pattern = re.search(r"\{(.*?)\}", arg)
+        if pattern:
+            new = shlex.split(arg)
+            obj_cls = new[0]
+            obj_id = new[1]
+            obj_key = "{}.{}".format(obj_cls, obj_id)
+            if all_objs.get(obj_key) is None:
+                print("** no instance found **")
+                return False
+
+            _dict = eval(pattern.group(0))
+            obj_dict = all_objs[obj_key]
+            for key, val in _dict.items():
+                if key in obj_dict.__class__.__dict__.keys():
+                    type_cast = type(obj_dict.__class__.__dict__[key])
+                    obj_dict.__dict__[key] = type_cast(val)
+                else:
+                    obj_dict.__dict__[key] = val
+            storage.save()
+            return
+
+        new = shlex.split(arg)
 
         obj_cls = new[0]
-        if (obj_cls not in HBNBCommand.__classes):
+        if obj_cls not in HBNBCommand.__classes:
             print("** class doesn't exist **")
             return
-        if (len(new) == 1):
+        if len(new) == 1:
             print("** instance id missing **")
-            return
+            return False
 
         # check existence of object id
         obj_id = new[1]
         obj_key = "{}.{}".format(obj_cls, obj_id)
-        if (all_objs.get(obj_key) is None):
+        if all_objs.get(obj_key) is None:
             print("** no instance found **")
-            return
+            return False
 
-        if (len(new) == 2):
+        if len(new) == 2:
             print("** attribute name missing **")
-            return
-        if (len(new) == 3):
-            print("** value missing **")
-            return
+            return False
 
-        attribute = new[2]
+        if len(new) == 3:
+            print("** value missing **")
+            return False
+
+        attr = new[2]
         value = new[3]
 
         obj_dict = dict(all_objs[obj_key].__dict__)
 
-        if hasattr(all_objs[obj_key], new[2]):
-            cast = str(type(getattr(all_objs[obj_key], new[2])).__name__)
-            obj_dict[attribute] = eval("{}({})".format(cast, value))
+        if hasattr(all_objs[obj_key], attr):
+            cast = str(type(getattr(all_objs[obj_key], attr)).__name__)
+            obj_dict[attr] = eval("{}".format(cast))(value)
             all_objs[obj_key].__dict__.update(obj_dict)
 
         else:
-            obj_dict[attribute] = value
+            obj_dict[attr] = value
             all_objs[obj_key].__dict__.update(obj_dict)
 
         all_objs[obj_key].save()
@@ -212,7 +248,7 @@ class HBNBCommand(cmd.Cmd):
             cls_id = obj_id.split(".")
             cls_name = cls_id[0]
 
-            if (cls_name == arg):
+            if cls_name == arg:
                 instance_count += 1
         print(instance_count)
 
@@ -226,12 +262,23 @@ class HBNBCommand(cmd.Cmd):
         except IndexError:
             pass
 
+        """
+            If command is part of the documented commands, and there
+            is not argument
+        """
         if len(cmds) == 1:
             line = "{}".format(cmd1)
+
+        # User.count(), User.all() type of arguments
         elif len(cmds) > 1:
             if cmd1 in HBNBCommand.__classes:
+
+                """
+                    If there is a string argument in the command;
+                    User.update("id")
+                """
                 try:
-                    cmd_and_id = [arg for arg in re.split(r'[()]', cmd2)
+                    cmd_and_id = [arg for arg in re.split(r"[()]", cmd2)
                                   if arg.strip]
                     cmd_do = cmd_and_id[0]
                     id_do = cmd_and_id[1]
@@ -239,13 +286,67 @@ class HBNBCommand(cmd.Cmd):
                     pass
 
                 if cmd_do and id_do:
-                    line = "{} {} {}".format(HBNBCommand.__methods[cmd_do],
-                                             cmd1, id_do)
+                    if cmd_do == "update":
+                        args = HBNBCommand.process_update(line)
+
+                        if (isinstance(args, tuple)):
+                            _id, _dict = args
+                            patt = re.search(r'"(.*?)"', _id)
+                            new_id = patt.group(0)
+
+                            line = "{} {} {} {}".format(
+                                    HBNBCommand.__methods[cmd_do],
+                                    cmd1,
+                                    new_id,
+                                    _dict,
+                            )
+                        else:
+                            """
+                                args[0]: id
+                                args[1]: attribute to update or add
+                                args[2]: value of attribute to be updated
+                            """
+                            print("=====", args[0], args[1], args[2])
+                            line = "{} {} {} {} {}".format(
+                                HBNBCommand.__methods[cmd_do],
+                                cmd1,
+                                args[0],
+                                args[1],
+                                args[2],
+                            )
+                    else:
+                        line = "{} {} {}".format(
+                            HBNBCommand.__methods[cmd_do], cmd1, id_do
+                        )
                 else:
-                    line = "{} {}".format(HBNBCommand.__methods[cmd2],
-                                          cmd1)
+                    line = "{} {}".format(HBNBCommand.__methods[cmd2], cmd1)
         r = super(HBNBCommand, self).onecmd(line)
         return r
+
+    @staticmethod
+    def process_update(arg):
+        """Processes the string from update command"""
+        pattern = re.search(r"\{(.*?)\}", arg)
+
+        """
+            If pattern is found, then a tuple is returned
+            containing the ClassName.id and dictionary
+        """
+        if pattern:
+            _dict = eval(pattern.group(0))
+            split_arg = [arg for arg in arg.split(",")]
+
+            args = (split_arg[0], _dict)
+
+        # the updates are made one attribute at a time
+        else:
+            cmd = arg.split(".")
+            print(cmd)
+            args = [arg for arg in re.split(r"[()]", cmd[1]) if arg.strip()]
+            f_args = [arg for arg in args[1].split(",") if arg.strip()]
+            print(f_args)
+
+        return f_args
 
 
 if __name__ == "__main__":
