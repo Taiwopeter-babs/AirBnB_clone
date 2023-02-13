@@ -335,16 +335,13 @@ class HBNBCommand(cmd.Cmd):
         if pattern:
             _dict = eval(pattern.group(0))
             split_arg = [arg for arg in arg.split(",")]
-
-            args = (split_arg[0], _dict)
+            f_args = (split_arg[0], _dict)
 
         # the updates are made one attribute at a time
         else:
             cmd = arg.split(".")
-            print(cmd)
             args = [arg for arg in re.split(r"[()]", cmd[1]) if arg.strip()]
             f_args = [arg for arg in args[1].split(",") if arg.strip()]
-            print(f_args)
 
         return f_args
 
