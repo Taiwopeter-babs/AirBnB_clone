@@ -2,6 +2,7 @@
 """
     Command Interpreter for Models and Methods
 """
+import re
 import cmd
 import shlex
 from models.base_model import BaseModel
@@ -23,6 +24,8 @@ class HBNBCommand(cmd.Cmd):
     __classes = {"BaseModel": "BaseModel", "User": 'User', "State": 'State',
                  "City": 'City', "Place": 'Place', "Amenity": 'Amenity',
                  "Review": 'Review'}
+    __methods = {"all()": "all", "count()": "count", "show": "show",
+                 "destroy": "destroy"}
 
     def emptyline(self):
         """prompts for input again if no command is entered
@@ -199,6 +202,50 @@ class HBNBCommand(cmd.Cmd):
 
         all_objs[obj_key].save()
         storage.save()
+
+    def do_count(self, arg):
+        """Counts the number of instances based on a class"""
+        all_objs = storage.all()
+        instance_count = 0
+
+        for obj_id in all_objs.keys():
+            cls_id = obj_id.split(".")
+            cls_name = cls_id[0]
+
+            if (cls_name == arg):
+                instance_count += 1
+        print(instance_count)
+
+    def onecmd(self, line):
+        """defines user input as a shortcut for do_xxx methods"""
+
+        try:
+            cmds = line.split(".")
+            cmd1 = cmds[0]  # do_xx if len(cmd) == 1, otherwise a class
+            cmd2 = cmds[1]  # do_xx if len(cmds) > 1
+        except IndexError:
+            pass
+
+        if len(cmds) == 1:
+            line = "{}".format(cmd1)
+        elif len(cmds) > 1:
+            if cmd1 in HBNBCommand.__classes:
+                try:
+                    cmd_and_id = [arg for arg in re.split(r'[()]', cmd2)
+                                  if arg.strip]
+                    cmd_do = cmd_and_id[0]
+                    id_do = cmd_and_id[1]
+                except IndexError:
+                    pass
+
+                if cmd_do and id_do:
+                    line = "{} {} {}".format(HBNBCommand.__methods[cmd_do],
+                                             cmd1, id_do)
+                else:
+                    line = "{} {}".format(HBNBCommand.__methods[cmd2],
+                                          cmd1)
+        r = super(HBNBCommand, self).onecmd(line)
+        return r
 
 
 if __name__ == "__main__":
