@@ -1,6 +1,17 @@
 header {
-    background:#ffffff url("../images/holberton-logo.png") 20px 50% no-repeat;
+    display: flex;
+    align-items: center;
+    background:#ffffff;
     height: 70px;
     width: 100%;
     border-bottom: 1px solid #CCCCCC;
+}
+
+header .logo {
+    background: url("../images/holberton-logo.png") 20px 50% no-repeat;
+    padding-left: 20px;
+    margin-left: 10px;
+    height: 50px;
+    width: 150px;
+    /* border: 1px solid black; */
 }
