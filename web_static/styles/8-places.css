@@ -1,5 +1,5 @@
 .places {
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 .places-title {
     padding: 20px 20px;
@@ -30,7 +30,21 @@
     text-align: center;
     position: relative;
 }
+.price-and-name {
+    /* border: 1px solid black; */
+    height: 30px;
+}
+.price-and-name:first-child {
+    text-align: center;
+}
+
+.col-2-3 {
+    width: 66.66%;
+    padding-left: 20px;
+    /* border: 1px solid black; */
+}
 .col-2-3 h2 {
+
     font-size: 30px;
 }
 
@@ -42,7 +56,7 @@
     color: #FF5A5F;
     position: absolute;
     left: 80%;
-    top: 5%;
+    top: 3%;
     border-radius: 50%;
     min-width: 60px;
     height: 60px;
@@ -78,7 +92,7 @@
 
 .user {
     margin: 20px 0;
-    border: 1px solid black;
+    /* border: 1px solid black; */
     text-align: left;
 }
 .user .owner-name {
@@ -86,7 +100,7 @@
 }
 
 .description {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     text-align: left;
     margin-bottom: 20px;
 
