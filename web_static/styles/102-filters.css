@@ -104,10 +104,13 @@ MOBILE VIEW
 */
 @media only screen and (max-width: 600px) {
     .filters {
+        width: 98%;
         align-items: center;
         height: 50px;
         border: 1px solid black;
         margin-bottom: 0.6rem;
+        margin-left: 5px;
+        margin-right: 3px; 
     }
     .filters > button {
         right: 0.6rem;
@@ -118,13 +121,40 @@ MOBILE VIEW
     .filters .locations h3, .filters .amenities h3 {
         font-size: 0.9rem;
         margin-top: 0.6rem;
-        padding: 0 10px 5px 10px;
+        padding: 0 10px 5px 5px;
     }
     .filters .locations h4, .filters .amenities h4{
-        padding: 0 10px 5px 10px;
+        padding: 0 10px 5px 5px;
         width: 100%;
         font-size: 0.7rem;
         font-weight: 500;
-    }      
+    }
+    
+    .filters .list-states {
+        display: none;
+        position: absolute;
+        top: 100%;
+        width: 150px;
+        background: #FAFAFA;
+        border: 1px solid #DDDDDD;
+        border-radius: 4px;
+        text-align: left;
+        z-index: 1;
+    }
+
+    .locations .list-states {
+        width: 120%;
+    }
+    
+    ul.popover {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        width: 100%;
+        list-style: none;
+        padding: 10px 10px 0px 10px;
+        /* text-align: center; */
+        line-height: 20px;
+    }
 
 }

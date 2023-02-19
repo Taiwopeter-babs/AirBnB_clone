@@ -4,7 +4,7 @@ LAPTOP, TABLET DESKTOPS
 =========================
 */
 .places {
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 .places-title {
     padding: 20px 20px;
@@ -179,6 +179,14 @@ MOBILE VIEW
 ================================
 */
 @media only screen and (max-width: 600px) {
+    .places {
+        border: 1px solid black;
+        width: 100%;
+    }
+
+    .places article {
+        width: 70%;
+    }
     .price-and-name {
         /* border: 1px solid black; */
         display: flex;
@@ -190,7 +198,7 @@ MOBILE VIEW
     
     .place-name h2 {
         font-size: 1.5rem;
-        border: 1px solid black;
+        /* border: 1px solid black; */
     }
     .price_by_night {
         left: 77%;
