@@ -16,6 +16,10 @@ header .logo {
     /* border: 1px solid black; */
 }
 
+header .logo:hover {
+    cursor: pointer;
+}
+
 /*
 ================================
 MOBILE VIEW
