@@ -1,0 +1,20 @@
+footer {
+    background: #ffffff;
+    border-top: 1px solid #CCCCCC;
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*
+================================
+MOBILE VIEW
+================================
+*/
+footer {
+    height: 2.5rem;
+}
