@@ -170,7 +170,6 @@ LAPTOP, TABLET DESKTOPS
 }
 .review-list h3 {
     font-weight: bold;
-    /* padding-bottom: 10px; */
 }
 
 /*
@@ -205,5 +204,19 @@ MOBILE VIEW
         min-width: 3rem;
         height: 3rem;
         font-size: 1.3rem;
+    }
+
+    .description {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        font-size: 0.9rem;
+        line-height: 1rem;
+        border: 1px solid black;
+        margin-bottom: 20px;
+    }
+
+    .review-list p {
+        line-height: 1.5rem;
     }
 }
