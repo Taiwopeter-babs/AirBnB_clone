@@ -1,9 +1,9 @@
-# AirBnB (The Console) Web static
+Before developing a big and complex web application, we will build the front end step-by-step.
 
-## Introduction
+The first step is to “design” / “sketch” / “prototype” each element:
 
-This project is the initialization of the AirBnb project in the ALX higher lever programming curriculum. It is designed to enable the user perform operations directly from the command line. The server side configuration of the AirBnb begins from here.
-
-## Web Static
-
-This part of the project introduces basic frontend usage to the application
+Create simple HTML static pages
+Style guide
+Fake contents
+No Javascript
+No data loaded from anything
